@@ -21,7 +21,7 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *http.ServeMux {
 	h.mux.HandleFunc("/rest/substr/find", h.loggingMiddleware(h.findHandler))
-	h.mux.HandleFunc("/rest/email/check", h.loggingMiddleware(h.checkEmailAndIINHandler))
+	h.mux.HandleFunc("/rest/email/check", h.loggingMiddleware(h.checkEmailHandler))
 
 	return h.mux
 }
@@ -44,7 +44,7 @@ func (h *Handler) findHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(maxSubstring))
 }
 
-func (h *Handler) checkEmailAndIINHandler(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) checkEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST requests are supported", http.StatusMethodNotAllowed)
 		return
