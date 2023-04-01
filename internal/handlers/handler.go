@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"rest-api/internal/service"
@@ -32,13 +31,17 @@ func (h *Handler) findHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Only POST requests are supported", http.StatusMethodNotAllowed)
 		return
 	}
-	s, err := io.ReadAll(r.Body)
+
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return
 	}
-	maxSubstring := h.service.Finder.FindMaxSubstring(string(s))
-	fmt.Fprint(w, maxSubstring)
+
+	maxSubstring := h.service.Finder.FindMaxSubstring(string(reqBody))
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(maxSubstring))
 }
 
 func (h *Handler) checkEmailAndIINHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,13 +49,14 @@ func (h *Handler) checkEmailAndIINHandler(w http.ResponseWriter, r *http.Request
 		http.Error(w, "Only POST requests are supported", http.StatusMethodNotAllowed)
 		return
 	}
-	s, err := io.ReadAll(r.Body)
+
+	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusBadRequest)
 		return
 	}
 
-	results := h.service.EmailChecker.CheckEmail(s)
+	results := h.service.EmailChecker.CheckEmail(reqBody)
 
 	jsonResult, err := json.Marshal(results)
 	if err != nil {
