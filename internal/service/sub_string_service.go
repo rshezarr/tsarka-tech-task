@@ -1,6 +1,9 @@
 package service
 
-import "strings"
+import (
+	"strings"
+	"unicode/utf8"
+)
 
 type Finder interface {
 	FindMaxSubstring(s string) string
@@ -13,16 +16,19 @@ func NewFindService() *FindService {
 }
 
 func (f *FindService) FindMaxSubstring(str string) string {
-	s := strings.Builder{}
-	s.Grow(len(str))
-	m := make(map[rune]bool, len(str))
-
-	for _, v := range str {
-		if !m[v] {
-			s.WriteRune(v)
-			m[v] = true
+	var result string
+	for i := 0; i < len(str); i++ {
+		sub := ""
+		for j := i; j < len(str); j++ {
+			if index := strings.IndexByte(sub, str[j]); index == -1 {
+				sub += string(str[j])
+			} else {
+				break
+			}
+		}
+		if utf8.RuneCountInString(sub) > utf8.RuneCountInString(result) {
+			result = sub
 		}
 	}
-
-	return s.String()
+	return result
 }
