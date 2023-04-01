@@ -2,22 +2,37 @@ package app
 
 import (
 	"log"
-	"net/http"
+	"os"
+	"os/signal"
 	"rest-api/internal/handlers"
+	"rest-api/internal/server"
 	"rest-api/internal/service"
+	"syscall"
 )
 
 func Start() {
 	service := service.NewService()
 	handler := handlers.NewHandler(service)
 
-	server := http.Server{
-		Addr:    ":8080",
-		Handler: handler.InitRoutes(),
+	srv := server.NewServer(handler.InitRoutes())
+
+	log.Printf("app: starting...")
+
+	quit := make(chan os.Signal, 1)
+
+	go func() {
+		log.Printf("app: Starting server at port %v -> http://localhost%v", srv.Srv.Addr, srv.Srv.Addr)
+		srv.Start()
+	}()
+
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+
+	select {
+	case signal := <-quit:
+		log.Printf("app: signal accepted: %v", signal)
+	case err := <-srv.ServerErrNotify():
+		log.Printf("app: server closing: %v", err)
 	}
 
-	if err := server.ListenAndServe(); err != nil {
-		log.Printf("error occured while starting server: %e", err)
-		return
-	}
+	log.Printf("app: shutting down...")
 }
