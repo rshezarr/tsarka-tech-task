@@ -74,6 +74,6 @@ func (h *Handler) checkEmailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "json/application")
+	w.Header().Set("Content-Type", "text/plain")
 	w.Write(jsonResult)
 }
