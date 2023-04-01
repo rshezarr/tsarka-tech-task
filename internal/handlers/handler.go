@@ -20,8 +20,8 @@ func NewHandler(service *service.Service) *Handler {
 }
 
 func (h *Handler) InitRoutes() *http.ServeMux {
-	h.mux.HandleFunc("/rest/substr/find", h.findHandler)
-	h.mux.HandleFunc("/rest/email/check", h.checkEmailAndIINHandler)
+	h.mux.HandleFunc("/rest/substr/find", h.loggingMiddleware(h.findHandler))
+	h.mux.HandleFunc("/rest/email/check", h.loggingMiddleware(h.checkEmailAndIINHandler))
 
 	return h.mux
 }
