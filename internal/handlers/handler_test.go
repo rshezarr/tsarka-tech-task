@@ -13,26 +13,14 @@ func TestFindHandler(t *testing.T) {
 		input    string
 		expected string
 	}{
-		{
-			input:    "aaabbbccc112233",
-			expected: "abc123",
-		},
-		{
-			input:    "banana\nbandana",
-			expected: "ban\nd",
-		},
-		{
-			input:    "   \n",
-			expected: " \n",
-		},
-		{
-			input:    "313aca",
-			expected: "31ac",
-		},
-		{
-			input:    "AAaaBBbbCCcc",
-			expected: "AaBbCc",
-		},
+		{"abcabcbb", "abc"},
+		{"bbbbb", "b"},
+		{"pwwkew", "wke"},
+		{"aab", "ab"},
+		{"", ""},
+		{"a", "a"},
+		{"abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz"},
+		{"abacdefghefghijkl", "bacdefgh"},
 	}
 
 	for _, testCase := range testCases {
@@ -62,7 +50,7 @@ func TestFindHandler(t *testing.T) {
 		}
 
 		if res.Body.String() != testCase.expected {
-			t.Errorf("Expected response body '%s', but got '%s'", testCase.expected, res.Body.String())
+			t.Errorf("Request body: %s \n Expected response body '%s', but got '%s'", testCase.input, testCase.expected, res.Body.String())
 		}
 	}
 }
