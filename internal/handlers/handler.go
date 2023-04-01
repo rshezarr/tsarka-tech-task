@@ -32,6 +32,11 @@ func (h *Handler) findHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.Header.Get("Content-Type") != "text/plain" {
+		http.Error(w, "Only text/plain requests content-type are supported", http.StatusUnsupportedMediaType)
+		return
+	}
+
 	reqBody, err := io.ReadAll(r.Body)
 	if err != nil {
 		http.Error(w, "Error reading request body", http.StatusBadRequest)
@@ -47,6 +52,11 @@ func (h *Handler) findHandler(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) checkEmailHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST requests are supported", http.StatusMethodNotAllowed)
+		return
+	}
+
+	if r.Header.Get("Content-Type") != "text/plain" {
+		http.Error(w, "Only text/plain requests content-type are supported", http.StatusUnsupportedMediaType)
 		return
 	}
 
