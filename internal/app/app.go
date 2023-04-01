@@ -4,10 +4,12 @@ import (
 	"log"
 	"net/http"
 	"rest-api/internal/handlers"
+	"rest-api/internal/service"
 )
 
 func Start() {
-	handler := handlers.NewHandler()
+	service := service.NewService()
+	handler := handlers.NewHandler(service)
 
 	server := http.Server{
 		Addr:    ":8080",
