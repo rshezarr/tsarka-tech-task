@@ -15,7 +15,7 @@ For example:
 
 ```bash
 
-    POST http://localhost:8080/remove-duplicates
+    POST http://localhost:9090/rest/substr/find
     Content-Type: text/plain
 
     Hello, World!
@@ -23,7 +23,20 @@ For example:
 This would return:
 
 ```
-Helo, Wrd!
+, World!
 ```
 
 Similarly, you can use the `/rest/email/check` endpoint to validate and return only the valid email addresses.
+
+## How to start server
+Run from binary file
+```bash
+$ make build
+
+$ ./app
+```
+
+Run from main file
+```bash
+$ make run
+```
